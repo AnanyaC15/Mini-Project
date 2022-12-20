@@ -4,9 +4,10 @@ from config.log import logging
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 
-# logging.INFO("Pulling the dataset")
+logging.INFO("Pulling the dataset")
 df = pull_data("https://raw.githubusercontent.com/5x12/ml-cookbook/master/supplements/data/heart.csv")
 print(df)
+logging.INFO("Data Extracted")
 
 def train_test_split(df):
 
