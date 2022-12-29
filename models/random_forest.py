@@ -1,7 +1,7 @@
 from Connector.db_connect import pull_data
 from config.conf import logging
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 import pickle
 from util.util import store_model, load_model
 from config.conf import settings
@@ -24,10 +24,10 @@ def traintest_split(df):
 def df_train(X_train, y_train):
 	logging.info("Building and training the model")
 	# Building the model
-	clf = DecisionTreeClassifier(max_depth = 3, random_state = 3)
+	clf = RandomForestClassifier(max_depth = 2, random_state = 0)
 	# Training the model
 	clf.fit(X_train, y_train)
-	store_model(loc='models/conf/decision_tree.pkl', model=clf)
+	store_model(loc='models/conf/random_forest.pkl', model=clf)
 	return clf
 
 def predict(values, model_path):
