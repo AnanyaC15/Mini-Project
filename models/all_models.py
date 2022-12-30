@@ -1,11 +1,11 @@
 from Connector.db_connect import pull_data
 from config.conf import logging
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import GridSearchCV
+
 import pickle
 from util.util import store_model, load_model
-from models.prediction import predict
 from config.conf import settings
 
 
@@ -26,25 +26,22 @@ def traintest_split(df):
 def df_train(X_train, y_train):
 	logging.info("Building and training the model")
 	# Building the model
-	clf = LogisticRegression(random_state = 3)
-	clf.fit(X_train, y_train)
-
-	#Grid
-	parameter_grid = {'C': [0.01, 0.1, 1, 2, 10, 100], 'penalty': ['l1', 'l2']}
-	#Gridsearch
-	gridsearch = GridSearchCV(clf, parameter_grid)
-
+	clf = RandomForestClassifier(max_depth = 2, random_state = 0)
 	# Training the model
-	gridsearch.fit(X_train, y_train)
-	store_model(loc='models/conf/logistic_reg.pkl', model=gridsearch)
-	return gridsearch
+	clf.fit(X_train, y_train)
+	store_model(loc='models/conf/random_forest.pkl', model=clf)
+	return clf
+
+def predict(values, model_path):
+	clf = load_model(model_path)
+	return clf.predict(values)
 
 df = pull_data(settings.DATA.dataset)
 
 X_train, X_test, y_train, y_test = traintest_split(df)
-clf_lr = df_train(X_train, y_train)
-logging.info(f'Accuracy score is: {clf_lr.score(X_test, y_test)}')
+clf = df_train(X_train, y_train)
+logging.info(f'Accuracy score is: {clf.score(X_test, y_test)}')
 
-response = predict(X_test, settings.MODEL.lr_conf)
+response = predict(X_test, settings.MODEL.rf_conf)
 
-logging.info(f'The prediction values are {clf_lr.predict(X_test)}')
+logging.info(f'The prediction values are {clf.predict(X_test)}')

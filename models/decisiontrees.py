@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 import pickle
 from util.util import store_model, load_model
+from models.prediction import predict
 from config.conf import settings
 
 
@@ -29,10 +30,6 @@ def df_train(X_train, y_train):
 	clf.fit(X_train, y_train)
 	store_model(loc='models/conf/decision_tree.pkl', model=clf)
 	return clf
-
-def predict(values, model_path):
-	clf = load_model(model_path)
-	return clf.predict(values)
 
 df = pull_data(settings.DATA.dataset)
 
